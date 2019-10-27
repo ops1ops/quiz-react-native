@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,11 @@ import {
 } from 'react-native';
 
 const Game = () => {
+  const [categories, setCategories] = useState();
+  useEffect(() => {
+
+  });
+
   return (
     <View>
       <Text>

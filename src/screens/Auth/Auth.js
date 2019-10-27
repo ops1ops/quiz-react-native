@@ -5,14 +5,15 @@ import {
   TextInput,
   Button,
 } from 'react-native';
+import axios from "axios";
 
-
-const Auth = () => {
+const Auth = ({ navigation: { navigate }}) => {
   const [userName, setUserName] = useState('');
   const handleAuth = useCallback(() => {
     axios.post(`http://quiz.minedonate.ru/v1/user`, { name: userName })
       .then((res) => console.log(res.data))
-      .catch(err => console.log(err))
+      .catch(err => console.log(err));
+    navigate('Game');
   }, [userName]);
 
   return (

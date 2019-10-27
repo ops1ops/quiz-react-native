@@ -1,4 +1,4 @@
-import { createStackNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import Auth from "./screens/Auth/Auth";
 import Game from "./screens/Game/Game";
 
