@@ -6,80 +6,54 @@ import {
   Button,
   StyleSheet,
   ScrollView,
+  StatusBar,
 } from 'react-native';
 import styles from "./styles";
-import {Modal, TouchableHighlight, Alert, Picker, RefreshControl, ProgressBarAndroid, StatusBar} from 'react-native';
 import axios from "axios";
 import LinearGradient from "react-native-linear-gradient";
+import MenuButton from "../../components/MenuButton/MenuButton";
 
 const Menu = ({ navigation: { navigate, push, toggleDrawer }}) => {
-  const [userName, setUserName] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
-  const handleAuth = useCallback(() => {
-    push('Game');
-  }, [userName]);
+  const [categories, setCategories] = useState([]);
+  const [user, setUser] = useState({});
+  console.log(categories)
+  useEffect(() => {
+    console.log(1)
+    axios.get('https://opentdb.com/api_category.php')
+      .then(({ data: { trivia_categories } }) => {
+        setCategories(trivia_categories);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    axios.post('http://quiz.minedonate.ru/v1/user')
+      .then(({ data }) => {
+        setUser(data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }, []);
 
   return (
-    <ScrollView style={styles.view}>
-      <Text style={styles.textLogo}>
-        Welcome to Quiz!
-      </Text>
-      <Text style={styles.text}>
-        Enter your nickname
-      </Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={setUserName}
-        value={userName}
-      />
-      <Button
-        styles={styles.button}
-        title={userName}
-        onPress={() => {
-          setModalVisible(!modalVisible);
-        }}
-      />
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={{marginTop: 22}}>
-          <View>
-            <Text>Hello World!</Text>
-
-            <TouchableHighlight
-              onPress={() => {
-                setModalVisible(!modalVisible);
-              }}>
-              <Text>Hide Modal</Text>
-            </TouchableHighlight>
-          </View>
-        </View>
-      </Modal>
-      <Picker
-        // selectedValue={this.state.language}
-        style={{height: 50, width: 100}}
-        onValueChange={(itemValue, itemIndex) =>
-          console.log(itemValue, itemIndex)
-        }>
-        <Picker.Item label="Java" value="java" />
-        <Picker.Item label="JavaScript" value="js" />
-      </Picker>
-      <ProgressBarAndroid />
-      <RefreshControl refreshing={true} onRefresh={() => console.log(1)}/>
-      <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles1.linearGradient}>
-        <Text style={styles1.buttonText}>
-          Sign in with Facebook
+    <LinearGradient colors={['#5b86e5', '#36d1dc']} style={styles1.linearGradient}>
+      <StatusBar backgroundColor="#5b86e5" barStyle="light-content"/>
+      <ScrollView>
+        <Text style={styles.textLogo}>
+          Welcome to Quiz
         </Text>
-      </LinearGradient>
-
-      // Later on in your styles..
-
-    </ScrollView>
+        <View>
+          <MenuButton
+            text="Play"
+            onPress={() => navigate('Game', { categories, user })}
+            containerStyle={{ backgroundColor: '#2BBBAD' }}
+            textStyle={{ color: 'white' }}
+          />
+          <MenuButton text="Profile"/>
+          <MenuButton text="Leader board" />
+        </View>
+      </ScrollView>
+    </LinearGradient>
   );
 };
 
@@ -88,18 +62,8 @@ Menu.propTypes = {};
 const styles1 = StyleSheet.create({
   linearGradient: {
     flex: 1,
-    paddingLeft: 15,
-    paddingRight: 15,
-    borderRadius: 5
-  },
-  buttonText: {
-    fontSize: 18,
-    fontFamily: 'Gill Sans',
-    textAlign: 'center',
-    margin: 10,
-    color: '#ffffff',
-    backgroundColor: 'transparent',
-  },
+    paddingHorizontal: 15,
+  }
 });
 
 export default Menu;

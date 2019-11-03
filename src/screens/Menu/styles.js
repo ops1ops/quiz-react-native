@@ -6,10 +6,11 @@ export default StyleSheet.create({
     height: '100%'
   },
   textLogo: {
-    paddingVertical: 10,
+    paddingTop: '50%',
+    paddingBottom: 25,
     textAlign: 'center',
     color: 'white',
-    fontSize: 30
+    fontSize: 40
   },
   text: {
     textAlign: 'center',
@@ -19,5 +20,4 @@ export default StyleSheet.create({
   input: {
     color: 'white',
   },
-
 });

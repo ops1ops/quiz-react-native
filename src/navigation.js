@@ -4,7 +4,7 @@ import Game from "./screens/Game/Game";
 
 export const MainNavigator = createStackNavigator({
   Menu: { screen: Menu, navigationOptions: { header: null } },
-  Game: { screen: Game },
+  Game: { screen: Game, navigationOptions: { header: null } },
 },{
   initialRouteName: 'Menu',
 });
