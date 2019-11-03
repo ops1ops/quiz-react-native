@@ -1,8 +1,10 @@
 import { createStackNavigator } from 'react-navigation-stack';
-import Auth from "./screens/Auth/Auth";
+import Menu from "./screens/Menu/Menu";
 import Game from "./screens/Game/Game";
 
 export const MainNavigator = createStackNavigator({
-  Auth: {screen: Auth},
-  Game: {screen: Game},
+  Menu: { screen: Menu, navigationOptions: { header: null } },
+  Game: { screen: Game },
+},{
+  initialRouteName: 'Menu',
 });
