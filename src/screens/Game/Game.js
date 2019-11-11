@@ -1,100 +1,99 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   StatusBar,
   StyleSheet,
-  Button,
   View,
 } from 'react-native';
 import LinearGradient from "react-native-linear-gradient";
 import axios from 'axios';
-import CategoriesList from "../../components/CategoriesList/CategoriesList";
-import MenuButton from "../../components/MenuButton/MenuButton";
-import AnswersList from "../../components/AnswersList/AnswersList";
+
+import CategoriesView from "./CategoriesView/CategoriesView";
+import QuestionsView from "./GameView/QuestionsView";
+import ResultView from "./ResultView/ResultView";
 
 const Game = ({ navigation }) => {
   const [selectedCategory, setSelectedCategory] = useState();
   const [questions, setQuestions] = useState([]);
+  const [gameId, setGameId] = useState();
   const [questionIndex, setQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState([]);
+  const [isLoading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
 
+  const questionsLength = questions.length;
   const categories = navigation.getParam('categories', []);
-  const { id } = navigation.getParam('user', []);
+  const { id: user_id } = navigation.getParam('user', []);
 
   const startGame = () => {
     console.log(navigation.getParam('user').id, selectedCategory)
     if (selectedCategory) {
+      setLoading(true);
       axios.post('http://quiz.minedonate.ru/v1/games?include=questions.ranswers', {
-        user_id: id,
-        category_id: selectedCategory
+        user_id,
+        category_id: selectedCategory,
+        count: 3,
       })
-        .then(({ data: { questions } }) => {
+        .then(({ data: { id, questions } }) => {
+          setLoading(false);
+          setGameId(id);
           setQuestions(questions);
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          setLoading(false);
+          console.log(err);
+        });
     }
   };
 
+  const answerOnQuestion = (answerId) => {
+    const questionId = questions[questionIndex].id;
+    setAnswers(answers => [...answers, { question_id: questionId, answer_id: answerId }]);
+    setQuestionIndex(index => index === questionsLength - 1 ? index : index + 1);
+  };
+
+  useEffect(() => {
+    console.log("render", answers);
+    if (questionIndex === questionsLength - 1) {
+      axios.put(`http://quiz.minedonate.ru/v1/games/${gameId}/sdelaju-cherez-god`, { user_id, answers })
+        .then(({ data: { right_amount } }) => {
+          setResult(right_amount);
+        })
+        .catch(err => console.log(err))
+    }
+  }, [answers]);
+
   return (
-    <LinearGradient colors={['#5b86e5', '#36d1dc' ]} style={{ flex: 1, paddingHorizontal: 15 }}>
+    <LinearGradient colors={['#5b86e5', '#36d1dc' ]} style={{ flex: 1, paddingHorizontal: 20 }}>
       <StatusBar backgroundColor="#5b86e5" barStyle="light-content"/>
-      { !questions.length ? (
-          <View>
-            <Text style={styles.title}>
-              Select category of questions
-            </Text>
-            <View style={styles.categoriesContainer}>
-              <CategoriesList
-                data={categories}
-                setSelectedCategory={setSelectedCategory}
-                selectedCategory={selectedCategory}
-              />
-            </View>
-            <MenuButton text="Start game" onPress={startGame}/>
-          </View>
-      ) : (
-        <View>
-          <Text style={styles.progress}>{`${questionIndex + 1}/${questions.length}`}</Text>
-          <Text style={styles.question}>{ questions[questionIndex].name }</Text>
-          <View>
-            <AnswersList
-              data={questions[questionIndex].ranswers}
-              setSelectedCategory={setSelectedCategory}
-              selectedCategory={selectedCategory}
+      { !questionsLength ? (
+          <CategoriesView
+            categories={categories}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            startGame={startGame}
+          />
+        ) : (
+          result === null ? (
+            <QuestionsView
+              questions={questions}
+              questionIndex={questionIndex}
+              answerOnQuestion={answerOnQuestion}
             />
-          </View>
-          <Button title="Prev" onPress={() => setQuestionIndex(index => index === 0 ? index : index - 1)}/>
-          <Button title="Next" onPress={() => setQuestionIndex(index => index === questions.length - 1 ? index : index + 1)}/>
-        </View>
-      )}
+          ) : (
+            <ResultView
+              result={result}
+              score={30}
+              questionsLength={questionsLength}
+            />
+          )
+        )}
     </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  title: {
-    color: 'white',
-    paddingVertical: 14,
-    textAlign: 'center',
-    fontSize: 23,
-    paddingHorizontal: 20
-  },
-  categoriesContainer: {
-    justifyContent: 'center',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 10,
-    height: 500
-  },
-  progress: {
-    color: 'white',
-    fontSize: 15,
-    opacity: 0.6
-  },
-  question: {
-    color: 'white',
-    fontSize: 20,
-    lineHeight: 30
-  }
+
 });
 
 Game.propTypes = {};

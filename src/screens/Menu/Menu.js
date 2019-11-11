@@ -18,17 +18,17 @@ const Menu = ({ navigation: { navigate, push, toggleDrawer }}) => {
   const [user, setUser] = useState({});
   console.log(categories)
   useEffect(() => {
-    console.log(1)
-    axios.get('https://opentdb.com/api_category.php')
-      .then(({ data: { trivia_categories } }) => {
-        setCategories(trivia_categories);
-      })
-      .catch(err => {
-        console.log(err);
-      });
     axios.post('http://quiz.minedonate.ru/v1/user')
       .then(({ data }) => {
         setUser(data);
+        console.log(data)
+        axios.get(`http://quiz.minedonate.ru/v1/categories?user_id=${data.id}`)
+          .then(({ data }) => {
+            setCategories(data);
+          })
+          .catch(err => {
+            console.log(err);
+          });
       })
       .catch(err => {
         console.log(err);
@@ -49,7 +49,10 @@ const Menu = ({ navigation: { navigate, push, toggleDrawer }}) => {
             containerStyle={{ backgroundColor: '#2BBBAD' }}
             textStyle={{ color: 'white' }}
           />
-          <MenuButton text="Profile"/>
+          <MenuButton
+            text="Profile"
+            onPress={() => navigate('Profile', { user })}
+          />
           <MenuButton text="Leader board" />
         </View>
       </ScrollView>
@@ -62,7 +65,7 @@ Menu.propTypes = {};
 const styles1 = StyleSheet.create({
   linearGradient: {
     flex: 1,
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
   }
 });
 

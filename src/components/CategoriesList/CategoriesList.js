@@ -8,6 +8,7 @@ const CategoriesList = ({ data, selectedCategory, setSelectedCategory}) => (
       <Text
         style={{ ...styles.categoryItem, ...(selectedCategory === id ? styles.selectedCategory : {})}}
         onPress={() => setSelectedCategory(id)}
+        keyExtractor={({ name }) => name}
       >
         {name}
       </Text>

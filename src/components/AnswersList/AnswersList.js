@@ -1,30 +1,75 @@
 import React, { useState, useCallback } from 'react';
-import {FlatList, StyleSheet, Text} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
-const AnswersList = ({ data, selectedCategory, setSelectedCategory}) => (
-  <FlatList
-    data={data}
-    renderItem={({item: {name, id}}) => (
-      <Text
-        style={{ ...styles.categoryItem, ...(selectedCategory === id ? styles.selectedCategory : {})}}
-        onPress={() => setSelectedCategory(id)}
-      >
-        {name}    {console.log(data)}
-      </Text>
-    )}
-  />
-);
+const AnswersList = ({ data, answerOnQuestion, isLastQuestion }) => {
+  const [isAnswered, setAnswered] = useState(false);
+  const [selectedAnswerId, setSelectedAnswerId] = useState();
+
+  const onPress = useCallback(
+    (answerId) => {
+      if (!isAnswered) {
+        setAnswered(true);
+        setSelectedAnswerId(answerId);
+        setTimeout(() => {
+          answerOnQuestion(answerId);
+          if (!isLastQuestion) setAnswered(false);
+        }, 1000);
+      }
+    },
+    [isAnswered],
+  );
+
+  return (
+    <View style={styles.answersContainer}>
+      { data.map(({ id, name, is_right }) => (
+        <TouchableOpacity
+          key={id}
+          style={{ ...styles.button, ...(isAnswered && is_right ? styles.isRightButton : id === selectedAnswerId ? styles.isNotRightButton : {}) }}
+          activeOpacity={isAnswered ? 1 : 0.2}
+          onPress={() => onPress(id)}
+        >
+          <Text style={{ ...styles.buttonText, ...(isAnswered && is_right ? styles.isAnsweredText : id === selectedAnswerId ? styles.isAnsweredText : {}) }}>
+            { name }
+          </Text>
+        </TouchableOpacity>
+      )) }
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-  categoryItem: {
-    lineHeight: 50,
-    fontSize: 18,
-    height: 50,
-    backgroundColor: 'white',
+  answersContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between'
   },
-  selectedCategory: {
-    color: '#5b86e5',
+  button: {
+    flexDirection: 'row',
+    padding: 10,
+    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    width: '45%',
+    minHeight: 60,
+    backgroundColor: 'white',
+    borderRadius: 10,
+  },
+  buttonText: {
+    opacity: 0.6,
+    fontSize: 18,
     fontWeight: 'bold'
+  },
+  isNotRightButton: {
+    backgroundColor: 'red',
+  },
+  isRightButton: {
+    backgroundColor: '#17F1D7',
+  },
+  isAnsweredText: {
+    opacity: 1,
+    color: 'white'
   }
 });
 
