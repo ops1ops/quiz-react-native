@@ -6,7 +6,7 @@ import Profile from "./screens/Profile/Profile";
 export const MainNavigator = createStackNavigator({
   Menu: { screen: Menu, navigationOptions: { header: null } },
   Game: { screen: Game, navigationOptions: { header: null } },
-  Profile: { screen: Profile, navigationOptions: { header: null } },
+  Profile: { screen: Profile, navigationOptions: { header: null }  },
 
 },{
   initialRouteName: 'Menu',
