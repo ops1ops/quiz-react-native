@@ -14,41 +14,48 @@ import { createAppContainer } from "react-navigation";
 import TopNavigation from "./topNavgiation";
 
 const TabNavigator = createAppContainer(TopNavigation);
+export const UserInfoContext = React.createContext('');
 
 const Profile = ({ navigation }) => {
   const { id: user_id } = navigation.getParam('user', []);
-  const [{ name, rating, score, search, statistic, total_count }, setUserInfo] = useState({});
+  const [userInfo, setUserInfo] = useState({});
+  const [isLoading, setLoading] = useState(false);
+  const { search, name } = userInfo;
 
   useEffect(() => {
-    axios.get(`http://quiz.minedonate.ru/v1/user/${user_id}?include=statistic&user_id=${user_id}`)
+    setLoading(true);
+    axios.get(`http://quiz.minedonate.ru/v1/user/${user_id}?include=statistic,games&user_id=${user_id}`)
       .then(({ data }) => {
+        console.log(data)
         setUserInfo(data);
       })
       .catch(({ response: { data }}) => console.log(data))
+      .finally(() => setLoading(false));
   }, []);
-
+  console.log("userInfo", userInfo)
   return (
     <View style={{ flex: 3 }}>
-      <LinearGradient colors={['#5b86e5', '#36d1dc']} style={{ flex: 1, paddingHorizontal: 20, paddingBottom: 10, paddingTop: 10, }}>
-        <StatusBar backgroundColor="#5b86e5" barStyle="light-content"/>
-        <View style={styles.profileContainer}>
-          <Avatar
-            icon={{name: 'user', type: 'font-awesome'}}
-            title={name && name.substring(0, 1)}
-            size="xlarge"
-            rounded
-          />
-          <Text style={styles.name}>
-            { name }
-          </Text>
-          <Text style={styles.search}>
-            { `@${search}` }
-          </Text>
+      <UserInfoContext.Provider value={{ userInfo, navigate: navigation.navigate }}>
+        <LinearGradient colors={['#5b86e5', '#36d1dc']} style={{ flex: 1, paddingHorizontal: 20, paddingBottom: 10, paddingTop: 10, }}>
+          <StatusBar backgroundColor="#5b86e5" barStyle="light-content"/>
+          <View style={styles.profileContainer}>
+            <Avatar
+              icon={{name: 'user', type: 'font-awesome'}}
+              size="xlarge"
+              rounded
+            />
+            <Text style={styles.name}>
+              { name }
+            </Text>
+            <Text style={styles.search}>
+              { `@${search}` }
+            </Text>
+          </View>
+        </LinearGradient>
+        <View style={styles.tabsContainer}>
+          <TabNavigator />
         </View>
-      </LinearGradient>
-      <View style={styles.tabsContainer}>
-        <TabNavigator />
-      </View>
+      </UserInfoContext.Provider>
     </View>
 
   );
@@ -74,7 +81,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   tabsContainer: {
-    backgroundColor: '#E6E7E8',
+    backgroundColor: '#F0F6F4',
     flex: 2,
   }
 });

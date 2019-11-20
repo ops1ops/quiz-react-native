@@ -1,9 +1,10 @@
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import GeneralTab from './GeneralTab';
+import HistoryTab from "./HistoryTab";
 
 export default createMaterialTopTabNavigator({
   General: GeneralTab,
-  History: GeneralTab
+  History: HistoryTab
 }, {
   tabBarOptions: {
     indicatorStyle: {
