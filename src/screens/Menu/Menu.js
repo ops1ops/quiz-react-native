@@ -53,7 +53,10 @@ const Menu = ({ navigation: { navigate, push, toggleDrawer }}) => {
             text="Profile"
             onPress={() => navigate('Profile', { user })}
           />
-          <MenuButton text="Leader board" />
+          <MenuButton
+            text="Leader board"
+            onPress={() => navigate('LeaderBoard', { user })}
+          />
         </View>
       </ScrollView>
     </LinearGradient>

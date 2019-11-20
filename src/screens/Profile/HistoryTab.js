@@ -13,17 +13,15 @@ const HistoryTab = () => {
     <ScrollView>
       { games.length ?
         games.map(({ created, amount, right_amount, id }, index) => (
-          <TouchableOpacity>
-            <ListItem
-              key={index}
-              title={`Answered ${right_amount}/${amount}`}
-              leftElement={<Text style={{ fontSize: 20, fontWeight: 'bold' }}>1</Text>}
-              subtitle={created}
-              onPress={() => navigate('Game', { id })}
-              bottomDivider
-              chevron
-            />
-          </TouchableOpacity>
+          <ListItem
+            key={index}
+            title={`Answered ${right_amount}/${amount}`}
+            leftElement={<Text style={{ fontSize: 20, fontWeight: 'bold' }}>{ index + 1}</Text>}
+            subtitle={created}
+            // onPress={() => navigate('HistoryGamePage', { id })}
+            bottomDivider
+            // chevron
+          />
         )) : (
           <Text style={styles.text}>You have not played games yet.</Text>
         )

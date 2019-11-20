@@ -1,7 +1,9 @@
 import React from 'react';
 import {StyleSheet, Text, View} from "react-native";
+import MenuButton from "../../../components/MenuButton/MenuButton";
+import Icon from "react-native-vector-icons/Ionicons";
 
-const ResultView = ({ questionsLength, result, score }) => {
+const ResultView = ({ goBack, questionsLength, result }) => {
   return (
     <View style={styles.resultView}>
       <Text style={styles.title}>
@@ -10,12 +12,19 @@ const ResultView = ({ questionsLength, result, score }) => {
       <Text style={styles.result}>
         You answered correctly {result} of {questionsLength} questions.
       </Text>
+      <Icon name="ios-arrow-round-back" onPress={() => goBack()} size={50} style={styles.icon} color="white"/>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  icon: {
+    position: 'absolute',
+    left: '2%',
+    top: '1%'
+  },
   resultView: {
+    position: 'relative',
     flex: 1,
     alignItems: 'center',
   },
@@ -24,7 +33,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 25,
     lineHeight: 30,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   title: {
     paddingTop: '40%',

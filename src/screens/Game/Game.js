@@ -85,6 +85,7 @@ const Game = ({ navigation }) => {
               result={result}
               score={30}
               questionsLength={questionsLength}
+              goBack={navigation.goBack}
             />
           )
         )}

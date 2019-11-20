@@ -2,6 +2,12 @@ import React from 'react';
 import {StyleSheet, Text, View} from "react-native";
 import CategoriesList from "../../../components/CategoriesList/CategoriesList";
 import MenuButton from "../../../components/MenuButton/MenuButton";
+import RadioForm from "react-native-simple-radio-button";
+
+const radio_props = [
+  {label: '5', value: 5 },
+  {label: '10', value: 10 }
+];
 
 const CategoriesView = ({ categories, setSelectedCategory, selectedCategory, startGame }) => {
   return (
@@ -16,6 +22,20 @@ const CategoriesView = ({ categories, setSelectedCategory, selectedCategory, sta
           selectedCategory={selectedCategory}
         />
       </View>
+      <Text style={styles.title}>
+        Select number of questions
+      </Text>
+      <RadioForm
+        style={{ justifyContent: 'space-around'}}
+        radio_props={radio_props}
+        labelStyle={{fontSize: 18, color: 'white'}}
+        onPress={(value) => {console.log(value)}}
+        buttonColor="white"
+        selectedButtonColor="#5b86e5"
+        buttonSize={25}
+        formHorizontal={true}
+        animation={false}
+      />
       <MenuButton text="Start game" onPress={startGame}/>
     </View>
   );
