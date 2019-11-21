@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import AsyncStorage from '@react-native-community/async-storage';
 import {
   View,
   Text,
@@ -18,21 +19,44 @@ const Menu = ({ navigation: { navigate, push, toggleDrawer }}) => {
   const [user, setUser] = useState({});
   console.log(categories)
   useEffect(() => {
-    axios.post('http://quiz.minedonate.ru/v1/user')
-      .then(({ data }) => {
-        setUser(data);
-        console.log(data)
-        axios.get(`http://quiz.minedonate.ru/v1/categories?user_id=${data.id}`)
-          .then(({ data }) => {
-            setCategories(data);
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    const getData = async () => {
+      try {
+        const value = await AsyncStorage.getItem('@storage_Key')
+        if(value !== null) {
+          axios.get(`http://quiz.minedonate.ru/v1/categories?user_id=${value.id}`)
+            .then(({ data }) => {
+              setCategories(data);
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        } else {
+          axios.post('http://quiz.minedonate.ru/v1/user')
+            .then(({ data }) => {
+              setUser(data);
+              const storeData = async () => {
+                try {
+                  await AsyncStorage.setItem('@user', data);
+                } catch (e) {
+                  console.log(e)
+                }
+              };
+              axios.get(`http://quiz.minedonate.ru/v1/categories?user_id=${data.id}`)
+                .then(({ data }) => {
+                  setCategories(data);
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+      } catch(e) {
+        console.log(e)
+      }
+    };
   }, []);
 
   return (

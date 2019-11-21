@@ -9,7 +9,7 @@ const radio_props = [
   {label: '10', value: 10 }
 ];
 
-const CategoriesView = ({ categories, setSelectedCategory, selectedCategory, startGame }) => {
+const CategoriesView = ({ categories, setSelectedCategory, selectedCategory, startGame, setQuestionsCount }) => {
   return (
     <View>
       <Text style={styles.title}>
@@ -29,7 +29,7 @@ const CategoriesView = ({ categories, setSelectedCategory, selectedCategory, sta
         style={{ justifyContent: 'space-around'}}
         radio_props={radio_props}
         labelStyle={{fontSize: 18, color: 'white'}}
-        onPress={(value) => {console.log(value)}}
+        onPress={(count) => setQuestionsCount(count)}
         buttonColor="white"
         selectedButtonColor="#5b86e5"
         buttonSize={25}

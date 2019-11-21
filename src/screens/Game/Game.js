@@ -3,7 +3,7 @@ import {
   Text,
   StatusBar,
   StyleSheet,
-  View,
+  View, ScrollView,
 } from 'react-native';
 import LinearGradient from "react-native-linear-gradient";
 import axios from 'axios';
@@ -20,6 +20,7 @@ const Game = ({ navigation }) => {
   const [answers, setAnswers] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [questionsCount, setQuestionsCount] = useState(5);
 
   const questionsLength = questions.length;
   const categories = navigation.getParam('categories', []);
@@ -32,7 +33,7 @@ const Game = ({ navigation }) => {
       axios.post('http://quiz.minedonate.ru/v1/games?include=questions.ranswers', {
         user_id,
         category_id: selectedCategory,
-        count: 3,
+        count: questionsCount,
       })
         .then(({ data: { id, questions } }) => {
           setLoading(false);
@@ -66,12 +67,14 @@ const Game = ({ navigation }) => {
   return (
     <LinearGradient colors={['#5b86e5', '#36d1dc' ]} style={{ flex: 1, paddingHorizontal: 20 }}>
       <StatusBar backgroundColor="#5b86e5" barStyle="light-content"/>
-      { !questionsLength ? (
+      <ScrollView>
+        { !questionsLength ? (
           <CategoriesView
             categories={categories}
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
             startGame={startGame}
+            setQuestionsCount={setQuestionsCount}
           />
         ) : (
           result === null ? (
@@ -89,6 +92,7 @@ const Game = ({ navigation }) => {
             />
           )
         )}
+      </ScrollView>
     </LinearGradient>
   );
 };
