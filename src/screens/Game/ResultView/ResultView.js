@@ -1,6 +1,5 @@
 import React from 'react';
 import {StyleSheet, Text, View} from "react-native";
-import MenuButton from "../../../components/MenuButton/MenuButton";
 import Icon from "react-native-vector-icons/Ionicons";
 
 const ResultView = ({ goBack, questionsLength, result }) => {

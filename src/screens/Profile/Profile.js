@@ -12,6 +12,8 @@ import {Avatar} from 'react-native-elements';
 import { createAppContainer } from "react-navigation";
 
 import TopNavigation from "./topNavgiation";
+import Icon from "react-native-vector-icons/Ionicons";
+
 
 const TabNavigator = createAppContainer(TopNavigation);
 export const UserInfoContext = React.createContext('');
@@ -36,7 +38,14 @@ const Profile = ({ navigation }) => {
   return (
     <View style={{ flex: 3 }}>
       <UserInfoContext.Provider value={{ userInfo, navigate: navigation.navigate }}>
-        <LinearGradient colors={['#5b86e5', '#36d1dc']} style={{ flex: 1, paddingHorizontal: 20, paddingBottom: 10, paddingTop: 10, }}>
+        <LinearGradient colors={['#5b86e5', '#36d1dc']} style={{ flex: 1, paddingHorizontal: 20, paddingBottom: 10, paddingTop: 10, position: 'relative' }}>
+          <Icon
+            name="ios-arrow-round-back"
+            onPress={() => navigation.goBack()}
+            size={50}
+            style={styles.icon}
+            color="white"
+          />
           <StatusBar backgroundColor="#5b86e5" barStyle="light-content"/>
           <View style={styles.profileContainer}>
             <Avatar
@@ -48,7 +57,7 @@ const Profile = ({ navigation }) => {
               { name }
             </Text>
             <Text style={styles.search}>
-              { `@${search}` }
+              { search && `@${search}` }
             </Text>
           </View>
         </LinearGradient>
@@ -83,6 +92,12 @@ const styles = StyleSheet.create({
   tabsContainer: {
     backgroundColor: '#F0F6F4',
     flex: 2,
+  },
+  icon: {
+    position: 'absolute',
+    left: '5%',
+    top: '2%',
+    zIndex: 1000,
   }
 });
 

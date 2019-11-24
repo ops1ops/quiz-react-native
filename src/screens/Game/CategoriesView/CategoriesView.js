@@ -31,7 +31,7 @@ const CategoriesView = ({ categories, setSelectedCategory, selectedCategory, sta
         labelStyle={{fontSize: 18, color: 'white'}}
         onPress={(count) => setQuestionsCount(count)}
         buttonColor="white"
-        selectedButtonColor="#5b86e5"
+        selectedButtonColor="white"
         buttonSize={25}
         formHorizontal={true}
         animation={false}

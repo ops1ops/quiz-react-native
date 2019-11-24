@@ -17,30 +17,24 @@ import MenuButton from "../../components/MenuButton/MenuButton";
 const Menu = ({ navigation: { navigate, push, toggleDrawer }}) => {
   const [categories, setCategories] = useState([]);
   const [user, setUser] = useState({});
-  console.log(categories)
+
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const value = await AsyncStorage.getItem('@storage_Key')
-        if(value !== null) {
-          axios.get(`http://quiz.minedonate.ru/v1/categories?user_id=${value.id}`)
-            .then(({ data }) => {
-              setCategories(data);
-            })
-            .catch(err => {
-              console.log(err);
-            });
-        } else {
-          axios.post('http://quiz.minedonate.ru/v1/user')
-            .then(({ data }) => {
-              setUser(data);
-              const storeData = async () => {
-                try {
-                  await AsyncStorage.setItem('@user', data);
-                } catch (e) {
-                  console.log(e)
-                }
-              };
+    AsyncStorage.getItem('@user').then(value => {
+      if(value !== null) {
+        const localUser = JSON.parse(value);
+        setUser(localUser);
+        axios.get(`http://quiz.minedonate.ru/v1/categories?user_id=${localUser.id}`)
+          .then(({ data }) => {
+            setCategories(data);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else {
+        axios.post('http://quiz.minedonate.ru/v1/user')
+          .then(({ data }) => {
+            setUser(data);
+            AsyncStorage.setItem('@user', JSON.stringify(data)).then(() => {
               axios.get(`http://quiz.minedonate.ru/v1/categories?user_id=${data.id}`)
                 .then(({ data }) => {
                   setCategories(data);
@@ -49,14 +43,12 @@ const Menu = ({ navigation: { navigate, push, toggleDrawer }}) => {
                   console.log(err);
                 });
             })
-            .catch(err => {
-              console.log(err);
-            });
-        }
-      } catch(e) {
-        console.log(e)
+          })
+          .catch(err => {
+            console.log(err);
+          });
       }
-    };
+    }).catch(err => console.log(err));
   }, []);
 
   return (
@@ -78,7 +70,7 @@ const Menu = ({ navigation: { navigate, push, toggleDrawer }}) => {
             onPress={() => navigate('Profile', { user })}
           />
           <MenuButton
-            text="Leader board"
+            text="Leaderboard"
             onPress={() => navigate('LeaderBoard', { user })}
           />
         </View>

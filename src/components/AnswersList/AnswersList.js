@@ -25,7 +25,7 @@ const AnswersList = ({ data, answerOnQuestion, isLastQuestion }) => {
         <TouchableOpacity
           key={id}
           style={{ ...styles.button, ...(isAnswered && is_right ? styles.isRightButton : id === selectedAnswerId ? styles.isNotRightButton : {}) }}
-          activeOpacity={isAnswered ? 1 : 0.2}
+          activeOpacity={1}
           onPress={() => onPress(id)}
         >
           <Text style={{ ...styles.buttonText, ...(isAnswered && is_right ? styles.isAnsweredText : id === selectedAnswerId ? styles.isAnsweredText : {}) }}>
